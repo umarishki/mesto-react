@@ -43,7 +43,7 @@ export class Api {
             'POST',
             'cards',
             {
-                name: data['place-name'],
+                name: data.name,
                 link: data.link,
             }
         );
@@ -58,41 +58,50 @@ export class Api {
     }
 
     patchProfileInfo(data) {
-        const { name, occupation } = data;
+        const { name, about } = data;
         return this._request(
             'PATCH',
             'users/me',
             {
                 name: name,
-                about: occupation
+                about: about
             }
         );
     }
 
-    patchProfileAvatar(data) {
+    patchProfileAvatar({ avatar }) {
         return this._request(
             'PATCH',
             'users/me/avatar',
             {
-                avatar: data.link,
+                avatar: avatar,
             }
         );
     }
 
-    deleteLike(cardID) {
+    deleteLike(cardId) {
         return this._request(
             'DELETE',
-            `cards/${cardID}/likes`,
+            `cards/${cardId}/likes`,
             undefined
         );
     }
 
-    putLike(cardID) {
+    putLike(cardId) {
         return this._request(
             'PUT',
-            `cards/${cardID}/likes`,
+            `cards/${cardId}/likes`,
             undefined
         );
+    }
+
+    changeLikeCardStatus(cardId, isLiked) {
+        if (isLiked) {
+            return this.deleteLike(cardId);
+        }
+        else {
+            return this.putLike(cardId);
+        }
     }
 }
 
