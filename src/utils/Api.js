@@ -1,4 +1,4 @@
-export class Api {
+class Api {
     constructor(options) {
         this._baseUrl = options.baseUrl;
         this._authorization = options.headers.authorization;
@@ -14,12 +14,7 @@ export class Api {
             },
             body: dataObj ? JSON.stringify(dataObj) : undefined
         })
-            .then(res => {
-                if (res.ok) {
-                    return res.json();
-                }
-                return Promise.reject(`Ошибка: ${res.status}`);
-            })
+            .then(res => res.ok ? res.json() : Promise.reject(`Ошибка: ${res.status}`))
     }
 
     getInitialCards() {
@@ -96,12 +91,7 @@ export class Api {
     }
 
     changeLikeCardStatus(cardId, isLiked) {
-        if (isLiked) {
-            return this.deleteLike(cardId);
-        }
-        else {
-            return this.putLike(cardId);
-        }
+        return isLiked ? this.deleteLike(cardId) : this.putLike(cardId);
     }
 }
 

@@ -2,29 +2,24 @@ import React, { useState } from 'react';
 import PopupWithForm from './PopupWithForm';
 
 function AddPlacePopup({ buttonTitle, onAddPlace, isOpen, onClose }) {
-    const [name, setName] = useState('');
-    const [link, setLink] = useState('');
+    const [formValues, setFormValues] = useState({ name: '', link: '' });
 
-    function hundleSetName(e) {
-        setName(e.target.value);
-    }
-
-    function hundleSetLink(e) {
-        setLink(e.target.value);
+    const handleChange = (e) => {
+      const {name, value} = e.target;
+      setFormValues(prevState => ({ ...prevState, [name]: value }));
     }
 
     function handleSubmit(e) {
         e.preventDefault();
         onAddPlace({
-            name: name,
-            link: link,
+            name: formValues.name,
+            link: formValues.link,
         });
         clearPopup();
     }
 
     function clearPopup() {
-        setName('');
-        setLink('');
+        setFormValues({ name: '', link: '' });
     }
 
     return (
@@ -36,14 +31,30 @@ function AddPlacePopup({ buttonTitle, onAddPlace, isOpen, onClose }) {
             isOpened={isOpen}
             onClose={onClose}
         >
-            <input id="place-name-input" className="popup__input popup__input_field_place-name"
-                value={name || ""} onChange={hundleSetName} type="text" name="place-name"
-                placeholder="Название" minLength="2" maxLength="30" required />
+            <input
+                id="place-name-input"
+                className="popup__input popup__input_field_place-name"
+                value={formValues.name || ""}
+                onChange={handleChange}
+                type="text"
+                name="name"
+                placeholder="Название"
+                minLength="2"
+                maxLength="30"
+                required
+            />
             <span className="place-name-input-error popup__error"></span>
             
-            <input id="place-link-input" className="popup__input popup__input_field_link"
-                value={link || ""} onChange={hundleSetLink} type="url" name="link"
-                placeholder="Ссылка на картинку" required />
+            <input
+                id="place-link-input"
+                className="popup__input popup__input_field_link"
+                value={formValues.link || ""}
+                onChange={handleChange}
+                type="url"
+                name="link"
+                placeholder="Ссылка на картинку"
+                required
+            />
             <span className="place-link-input-error popup__error"></span>
         </PopupWithForm>
     )

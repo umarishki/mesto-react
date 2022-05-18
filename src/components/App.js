@@ -9,6 +9,7 @@ import EditProfilePopup from './EditProfilePopup';
 import EditAvatarPopup from './EditAvatarPopup';
 import AddPlacePopup from './AddPlacePopup';
 import ConfirmDeletionPopup from './ConfirmDeletionPopup';
+import { initialButtonTitleValue } from '../utils/constants';
 
 function App() {
     const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
@@ -20,27 +21,13 @@ function App() {
     const [selectedCardToDelete, setSelectedCardToDelete] = useState(null);
     const [currentUser, setCurrentUser] = useState({});
 
-    const [buttonTitle, setButtonTitle] = useState('Сохранить');
-    const initialText = buttonTitle;
+    const [buttonTitle, setButtonTitle] = useState(initialButtonTitleValue);
 
     useEffect(() => {
-        api.getInitialCards()
-            .then((cards) => {
-                const initialCards = [];
-                cards.forEach((cardInfo) => {
-                    initialCards.push(cardInfo);
-                })
-                setCards(initialCards);
-            })
-            .catch((err) => {
-                console.log(err);
-            });
-    }, []);
-
-    useEffect(() => {
-        api.getProfileInfo()
-            .then((userData) => {
+        Promise.all([api.getProfileInfo(), api.getInitialCards()])
+            .then(([userData, cards]) => {
                 setCurrentUser(userData);
+                setCards(cards);
             })
             .catch((err) => {
                 console.log(err);
@@ -57,7 +44,7 @@ function App() {
                 console.log(err);
             })
             .finally(() => {
-                setButtonTitle(initialText);
+                setButtonTitle(initialButtonTitleValue);
                 closeAllPopups();
             });
     }
@@ -72,7 +59,7 @@ function App() {
                 console.log(err);
             })
             .finally(() => {
-                setButtonTitle(initialText);
+                setButtonTitle(initialButtonTitleValue);
                 closeAllPopups();
             });
     }
@@ -87,7 +74,7 @@ function App() {
                 console.log(err);
             })
             .finally(() => {
-                setButtonTitle(initialText);
+                setButtonTitle(initialButtonTitleValue);
                 closeAllPopups();
             });
     }
@@ -95,16 +82,16 @@ function App() {
     function handleCardDelete(card) {
         setButtonTitle('Сохранение...');
         api.deleteCard(card._id)
-        .then(() => {
-            setCards((state) => state.filter((c) => c._id !== card._id));
-        })
-        .catch((err) => {
-            console.log(err);
-        })
-        .finally(() => {
-            setButtonTitle(initialText);
-            closeAllPopups();
-        });
+            .then(() => {
+                setCards((state) => state.filter((c) => c._id !== card._id));
+            })
+            .catch((err) => {
+                console.log(err);
+            })
+            .finally(() => {
+                setButtonTitle(initialButtonTitleValue);
+                closeAllPopups();
+            });
     }
 
     function handleCardLike(card) {
@@ -161,10 +148,31 @@ function App() {
                 cards={cards}
             />
             <Footer />
-            <EditProfilePopup buttonTitle={buttonTitle} onUpdateUser={handleUpdateUser} isOpen={isEditProfilePopupOpen} onClose={closeAllPopups} />
-            <EditAvatarPopup buttonTitle={buttonTitle} onUpdateAvatar={handleUpdateAvatar} isOpen={isEditAvatarPopupOpen} onClose={closeAllPopups} />
-            <AddPlacePopup buttonTitle={buttonTitle} onAddPlace={handleAddPlaceSubmit} isOpen={isAddPlacePopupOpen} onClose={closeAllPopups} />
-            <ConfirmDeletionPopup buttonTitle={buttonTitle} card={selectedCardToDelete} onDeleteCard={handleCardDelete} isOpen={isConfirmDeletionPopupOpen} onClose={closeAllPopups} />
+            <EditProfilePopup
+                buttonTitle={buttonTitle}
+                onUpdateUser={handleUpdateUser}
+                isOpen={isEditProfilePopupOpen}
+                onClose={closeAllPopups}
+            />
+            <EditAvatarPopup
+                buttonTitle={buttonTitle}
+                onUpdateAvatar={handleUpdateAvatar}
+                isOpen={isEditAvatarPopupOpen}
+                onClose={closeAllPopups}
+            />
+            <AddPlacePopup
+                buttonTitle={buttonTitle}
+                onAddPlace={handleAddPlaceSubmit}
+                isOpen={isAddPlacePopupOpen}
+                onClose={closeAllPopups}
+            />
+            <ConfirmDeletionPopup
+                buttonTitle={buttonTitle}
+                card={selectedCardToDelete}
+                onDeleteCard={handleCardDelete}
+                isOpen={isConfirmDeletionPopupOpen}
+                onClose={closeAllPopups}
+            />
             <ImagePopup card={selectedCard} onClose={closeAllPopups} />
         </CurrentUserContext.Provider>
     );

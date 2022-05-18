@@ -10,7 +10,7 @@ function EditProfilePopup({ buttonTitle, onUpdateUser, isOpen, onClose }) {
     useEffect(() => {
         setName(currentUser.name);
         setDescription(currentUser.about);
-    }, [currentUser]);
+    }, [currentUser, isOpen]);
 
     function handleSetName(e) {
         setName(e.target.value);
@@ -38,14 +38,32 @@ function EditProfilePopup({ buttonTitle, onUpdateUser, isOpen, onClose }) {
             isOpened={isOpen}
             onClose={onClose}
         >
-            <input id="profile-name-input" className="popup__input popup__input_field_name"
-                value={name || ''} onChange={handleSetName} type="text" name="name" placeholder="Имя"
-                minLength="2" maxLength="40" required />
+            <input
+                id="profile-name-input"
+                className="popup__input popup__input_field_name"
+                value={name || ''}
+                onChange={handleSetName}
+                type="text"
+                name="name"
+                placeholder="Имя"
+                minLength="2"
+                maxLength="40"
+                required
+            />
             <span className="profile-name-input-error popup__error"></span>
             
-            <input id="profile-occupation-input" className="popup__input popup__input_field_occupation"
-                value={description || ''} onChange={handleSetDescription} type="text" name="occupation"
-                placeholder="Род занятий" minLength="2" maxLength="200" required />
+            <input
+                id="profile-occupation-input"
+                className="popup__input popup__input_field_occupation"
+                value={description || ''}
+                onChange={handleSetDescription}
+                type="text"
+                name="occupation"
+                placeholder="Род занятий"
+                minLength="2"
+                maxLength="200"
+                required
+            />
             <span className="profile-occupation-input-error popup__error"></span>
         </PopupWithForm>
     )
