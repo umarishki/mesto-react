@@ -37,10 +37,7 @@ class Api {
         return this._request(
             'POST',
             'cards',
-            {
-                name: data.name,
-                link: data.link,
-            }
+            data
         );
     }
 
